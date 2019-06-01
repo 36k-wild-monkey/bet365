@@ -181,6 +181,8 @@
                     if(i > 10) {
                         clearInterval(timer);
                         log('找不到, 确认下注按钮');
+                        // 下注失败，刷新
+                        document.querySelector('#refreshButton').click()
                         return
                     }
 
@@ -200,6 +202,9 @@
                         log('购买: ' + bet_team == 'Home_AH' ? '主队' : '客队' + '  确认下注失败');
                     }
                     clearInterval(timer);
+
+                    // 下注后，刷新
+                    document.querySelector('#refreshButton').click()
 
                 }, 200);
             }
@@ -248,7 +253,7 @@
                         }  else if(bet_select_team == 1 && bet_team == 'Away_AH') { // 只买客队
 
                         } else {
-                            log('下注队伍不符合:' + bet_team == 'Home_AH' ? '主队' : '客队');
+                            log('下注队伍不符合:' + (bet_team == 'Home_AH' ? '主队' : '客队'));
                             return;
                         }
 
