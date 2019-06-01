@@ -233,18 +233,14 @@
                             return;
                         }
 
+
+                        // console.log(data.team.trim().indexOf(data.home_name.trim()), data.team.trim(), data.home_name.trim(), bet_team)
                         if(data.team.trim() == data.home_name.trim()) {
                             bet_team = 'Home_AH';
-                            if(bet_invert) {
-                                bet_team = 'Away_AH';
-                            } 
                         } else {
                             bet_team = 'Away_AH';
-                            if(bet_invert) {
-                                bet_team = 'Home_AH';
-                            } 
+  
                         }
-                        // console.log(data.team.trim().indexOf(data.home_name.trim()), data.team.trim(), data.home_name.trim(), bet_team)
 
                         if(bet_select_team == -1) {
 
@@ -256,6 +252,8 @@
                             log('下注队伍不符合:' + (bet_team == 'Home_AH' ? '主队' : '客队'));
                             return;
                         }
+
+
 
                         if (['罚球得分', '2分球', '3分球'].indexOf(data.type) < 0) {
                             return;
@@ -272,6 +270,10 @@
                             log('3分球不买:' + (bet_team == 'Home_AH' ? '主队' : '客队'));
                             return;
                         }
+
+                        if(bet_invert) {
+                            bet_team = bet_team == 'Home_AH'? 'Away_AH': 'Home_AH';
+                        } 
 
                         var marketlineid = document.querySelector('#marketlineid').innerText.trim();
                         var bet_btn = document.querySelector('[marketlineid="' + marketlineid + '"] [selection="' + bet_team + '"]');
