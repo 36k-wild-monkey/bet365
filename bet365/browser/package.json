@@ -12,7 +12,7 @@
     "axios": "^0.18.0",
     "browserify": "^16.2.3",
     "isomorphic-ws": "^4.0.1",
-    "url-join": "^4.0.0",
-    "ws": "^7.0.0"
-  }
+    "url-join": "^4.0.0"
+  },
+  "devDependencies": {}
 }
