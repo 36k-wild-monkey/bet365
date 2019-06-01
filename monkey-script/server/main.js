@@ -26,11 +26,19 @@ wss.on('connection', function connection(ws, req) {
           break;
         }
         case 'update': {
-          down_bet_ws.send(JSON.stringify(data));
+          try {
+            down_bet_ws.send(JSON.stringify(data));
+          } catch(e) {
+
+          }
           break;
         }
         case 'hear': {
-          ws.send(JSON.stringify({action:'hear'}));
+          try {
+            ws.send(JSON.stringify({action:'hear'}));
+          }catch(e) {
+            
+          }
         }
         default:
           break;

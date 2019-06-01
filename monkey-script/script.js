@@ -66,16 +66,18 @@
             当前比赛id: <span id="marketlineid"></span>
         </div>
         <div>
-            下注金额: <input type="text" id="down-money" value="10">
+            <input type="checkbox" id="score-1">罚球
+            <input type="checkbox" id="score-2" checked>2分球
+            <input type="checkbox" id="score-3" checked>3分球
         </div>
         <div>
             <input type="radio" id="any-select" name="team-select" checked>两边都买
         </div>
         <div>
-            <input type="radio" id="home-select" name="team-select">主队：<input type="button" value="测试" id="home-test">
+            <input type="radio" id="home-select" name="team-select">主队：<input type="text" id="home-down-money" value="10"><input type="button" value="测试" id="home-test">
         </div>
         <div>
-            <input type="radio" id="away-select" name="team-select">客队：<input type="button" value="测试" id="away-test">
+            <input type="radio" id="away-select" name="team-select">客队：<input type="text" id="away-down-money" value="10"><input type="button" value="测试" id="away-test">
         </div>
 
         <div>
@@ -249,6 +251,20 @@
                             return;
                         }
 
+                        
+                        if (data.type == '罚球得分' && document.querySelector('#score-1').checked == false) {
+                            log('罚球得分不买:' + bet_team == 'Home_AH' ? '主队' : '客队');
+                            return;
+                        }
+                        if (data.type == '2分球' && document.querySelector('#score-2').checked == false) {
+                            log('2分不买:' + bet_team == 'Home_AH' ? '主队' : '客队');
+                            return;
+                        }
+                        if (data.type == '3分球' && document.querySelector('#score-3').checked == false) {
+                            log('3分球不买:' + bet_team == 'Home_AH' ? '主队' : '客队');
+                            return;
+                        }
+
                         var marketlineid = document.querySelector('#marketlineid').innerText.trim();
                         var bet_btn = document.querySelector('[marketlineid="' + marketlineid + '"] [selection="' + bet_team + '"]');
                         if(!bet_btn){
@@ -260,7 +276,13 @@
 
                         // log('购买: ' + bet_team == 'Home_AH' ? '主队' : '客队' )
                         // 确认下注
-                        down_bet(document.querySelector('#down-money').value, true);
+                        var bet_money = 0;
+                        if (bet_team == 'Home_AH') {
+                            bet_money = document.querySelector('#home-down-money').value
+                        } else {
+                            bet_money = document.querySelector('#away-down-money').value
+                        }
+                        down_bet(bet_money, true);
 
                         
                     }
@@ -298,7 +320,9 @@
                         return;
                     }
                     bet_btn.click();
-                    down_bet(document.querySelector('#down-money').value, false);
+                    var bet_money = 0;
+                    bet_money = document.querySelector('#home-down-money').value
+                    down_bet(bet_money, false);
                 };
 
                 document.querySelector('#away-test').onclick = function(){
@@ -315,7 +339,10 @@
                         return;
                     }
                     bet_btn.click();
-                    down_bet(document.querySelector('#down-money').value, false);
+
+                    var bet_money = 0;
+                    bet_money = document.querySelector('#away-down-money').value
+                    down_bet(bet_money, false);
                 };
 
                 DragFrame(document.querySelector('#drag-win'));
