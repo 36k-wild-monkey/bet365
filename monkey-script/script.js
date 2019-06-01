@@ -66,7 +66,7 @@
             当前比赛id: <span id="marketlineid"></span>
         </div>
         <div>
-            <input type="checkbox" id="score-1">罚球
+            <input type="checkbox" id="score-1">罚球得分
             <input type="checkbox" id="score-2" checked>2分球
             <input type="checkbox" id="score-3" checked>3分球
         </div>
@@ -208,12 +208,13 @@
                 var timer;
                 var ws = new WebSocket('ws://localhost:8887/ball');
                 function hear(){
-                    ws.send(JSON.stringify({action: 'hear'}));
+                    ws.send(JSON.stringify({action: 'auth', type: 'bet'}));
+                    ws.send(JSON.stringify({action: 'hear', time: new Date().getTime()}));
                 }
                 ws.onopen = function(){
                     log('ws连接成功');
                     ws.send(JSON.stringify({action: 'auth', type: 'bet'}));
-                    timer = setInterval(hear, 5000);
+                    timer = setInterval(hear, 10000);
                 }
                 ws.onclose = function(){
                     clearInterval(timer);
@@ -251,17 +252,19 @@
                             return;
                         }
 
-                        
+                        if (['罚球得分', '2分球', '3分球'].indexOf(data.type) < 0) {
+                            return;
+                        } 
                         if (data.type == '罚球得分' && document.querySelector('#score-1').checked == false) {
-                            log('罚球得分不买:' + bet_team == 'Home_AH' ? '主队' : '客队');
+                            log('罚球得分不买:' + (bet_team == 'Home_AH' ? '主队' : '客队'));
                             return;
                         }
                         if (data.type == '2分球' && document.querySelector('#score-2').checked == false) {
-                            log('2分不买:' + bet_team == 'Home_AH' ? '主队' : '客队');
+                            log('2分不买:' + (bet_team == 'Home_AH' ? '主队' : '客队'));
                             return;
                         }
                         if (data.type == '3分球' && document.querySelector('#score-3').checked == false) {
-                            log('3分球不买:' + bet_team == 'Home_AH' ? '主队' : '客队');
+                            log('3分球不买:' + (bet_team == 'Home_AH' ? '主队' : '客队'));
                             return;
                         }
 

@@ -195,14 +195,15 @@
                         }
 
                         // 转发数据
-                        var matchData = VC.match(/([1-2])1074|[1-2]1075|[1-2]1079/ig)
-                        if (matchData == null) {
+                        var typeData = VC.match(/([1-2])1074|[1-2]1075|[1-2]1079/ig)
+                        if (typeData == null) {
                             return
                         }
 
-                        for(var x=0; x<matchData.length; x++) {
-                            var team = matchData[x].slice(0, 1)
-
+                        for(var x=0; x<typeData.length; x++) {
+                            var team = typeData[x].slice(0, 1)
+                            var key = typeData[x].slice(1)
+                            
                             var eventTeam = selectTeam = this.matchData[leagueId].events[eventId].markets.teams
                             var eventTeamKey = selectTeam = this.matchData[leagueId].events[eventId].markets.teamsKey
                             var eventNode = this.matchData[leagueId].events[eventId].node
