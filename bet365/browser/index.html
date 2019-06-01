@@ -87,7 +87,7 @@
                 <h4 class="league-title">{{ league.name }}</h4>
                 <ul class="match-group" v-for="event in league.events">
                     <h4 class="split">
-                        <span class="split-item match-title "><input type="radio" name="select" @click="openEvent(event.id, event.markets.id)"> {{ event.name }}</span>
+                        <span class="split-item match-title "><input type="radio" name="select" @click="openEvent(event.id, event.markets.id)" :checked="eventData.eventId==event.id"> {{ event.name }}</span>
                         <span class="split-item match-title bg-dark text-center">{{ event.node }}</span>
                     </h4>
                     <h4 class="split">
