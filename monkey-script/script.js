@@ -174,7 +174,7 @@
                 alert('自动下注脚本: ' + t);
             }
 
-            function down_bet(money=5, is_click=true) {
+            function down_bet(money=5, is_click=true, bet_team) {
                 var i = 0;
                 var timer = setInterval(function(){
                     i += 1;
@@ -195,11 +195,11 @@
                             document.querySelector('.ui-dialog-buttonset button').click()
                             // 投注成功确认
                             document.querySelector('.ui-dialog-buttonset button').click()
-                            log('购买: ' + bet_team == 'Home_AH' ? '主队' : '客队' + '  下注成功' + money + '元');
+                            log('购买: ' + (bet_team == 'Home_AH' ? '主队' : '客队') + '  下注成功' + money + '元');
                         }
                         
                     } catch(e) {
-                        log('购买: ' + bet_team == 'Home_AH' ? '主队' : '客队' + '  确认下注失败');
+                        log('购买: ' +(bet_team == 'Home_AH' ? '主队' : '客队') + '  确认下注失败');
                     }
                     clearInterval(timer);
 
@@ -233,7 +233,7 @@
                             return;
                         }
 
-                        if(data.team.trim().indexOf(data.home_name.trim()) > -1) {
+                        if(data.team.trim() == data.home_name.trim()) {
                             bet_team = 'Home_AH';
                             if(bet_invert) {
                                 bet_team = 'Away_AH';
@@ -290,7 +290,7 @@
                         } else {
                             bet_money = document.querySelector('#away-down-money').value
                         }
-                        down_bet(bet_money, true);
+                        down_bet(bet_money, true, bet_team);
 
                         
                     }
@@ -330,7 +330,7 @@
                     bet_btn.click();
                     var bet_money = 0;
                     bet_money = document.querySelector('#home-down-money').value
-                    down_bet(bet_money, false);
+                    down_bet(bet_money, false, bet_invert?'Away_AH':'Home_AH');
                 };
 
                 document.querySelector('#away-test').onclick = function(){
@@ -350,7 +350,7 @@
 
                     var bet_money = 0;
                     bet_money = document.querySelector('#away-down-money').value
-                    down_bet(bet_money, false);
+                    down_bet(bet_money, false, bet_invert?'Home_AH':'Away_AH');
                 };
 
                 DragFrame(document.querySelector('#drag-win'));
