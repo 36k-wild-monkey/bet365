@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>match</title>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .league-item {
+            border-bottom: 2px;
+        }
+
+        .league-title {
+            display: block;
+            padding: 0 10px;
+            height: 45px;
+            color: #fff;
+            background-color: #007A1E;
+            line-height: 45px;
+        }
+
+        .league-group, .league-item, .match-group, .match-item {
+            display: block;
+            list-style: none;
+        }
+
+        .match-title {
+            background-color: #B16D1F;
+            color: #fff;
+            padding: 8px 5px;
+        }
+
+        .match-score {
+            padding: 20px 5px;
+        }
+
+        .match-score-home {
+            background-color: #800202;
+            color: #fff;
+        }
+
+        .match-score-away {
+            background-color: #310280;
+            color: #fff;
+        }
+
+        .split {
+            display: flex;
+        }
+
+        .split-item {
+            flex: 1;
+        }
+
+        .match-item {
+            background-color: #888888;
+            color: #fff;
+        }
+        .match-team {
+            padding: 8px 5px;
+        }
+
+
+        .bg-dark {
+            background-color: #3C3C3C;
+            color: #fff;
+        }
+        .text-center {
+            text-align: center;
+        }
+
+    </style>
+    <!--替换内容-->
+    <script src="app.b09e27e160c5c769e96ffa4460a8a909.js">
+
+</head>
+<body>
+    <div id="app">
+        <ul class="league-group">
+            <li class="league-item" v-for="league in matchData">
+                <h4 class="league-title">{{ league.name }}</h4>
+                <ul class="match-group" v-for="event in league.events">
+                    <h4 class="split">
+                        <span class="split-item match-title "><input type="radio" name="select" @click="openEvent(event.id, event.markets.id)"> {{ event.name }}</span>
+                        <span class="split-item match-title bg-dark text-center">{{ event.node }}</span>
+                    </h4>
+                    <h4 class="split">
+                        <span class="split-item match-score match-score-home text-center">{{ getEventScore(event, 0) }}</span>
+                        <span class="split-item match-score match-score-away text-center">{{ getEventScore(event, 1) }}</span>
+                    </h4>
+                    <li class="match-item" v-for="team in event.markets.teams">
+                        <div class="split">
+                            <span class="split-item match-team text-center">{{ team.name }}</span>
+                            <span class="split-item match-team text-center">{{ team.ball }}</span>
+                        </div>
+                    </li>
+                    <div class="split">
+                        <span class="split-item match-team text-center bg-dark">距离赛节结束</span>
+                        <span class="split-item match-team text-center bg-dark">{{event.time.join(":") }}</span>
+                    </div>
+                    <div v-if="event.id == eventData.eventId">
+                        <div class="match-team text-center bg-dark">比赛实时数据</div>
+                        <ul class="match-team text-center bg-dark">
+                            <li v-for="info in [...eventData.data].reverse()">{{ info }}</li>
+                        </ul>
+                    </div>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        var timer = setInterval(function(){
+            if(window.startEvent != undefined) {
+                clearInterval(timer);
+            } else {
+                return
+            }
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    matchData: {},
+                    eventData: {
+                        eventId: null,
+                        data: [],
+                    },
+                    ws_client: null,
+                },
+                methods: {
+                    updateGameData: function (newData) {
+                        this.matchData = newData
+                    },
+                    updateGameEventInfo: function(leagueId, eventId, VC_eventId, VC) {
+                        // 判断是否为选择事件
+                        if(this.eventData.eventId != VC_eventId) {
+                            return
+                        }
+                        var data_map = {
+                            1077 : '持有球权',    
+                            1074 : '2分球',   
+                            1075 : '3分球',   
+                            1078 : '罚球', 
+                            1079 : '罚球得分',  
+                            1080 : '罚球未中',   
+                            1081 : '暂停比赛',   
+                            1086 : '犯规',   
+                            1082 : '赛节结束',   
+                            1083 : '半场结束',   
+                            1084 : '比赛结束',   
+                            1085 : '加时赛',   
+                            1087 : '第1节',   
+                            1088 : '第2节',   
+                            1089 : '第3节',   
+                            1090 : '第4节',   
+                            1091 : '上半场',   
+                            1092 : '下半场',   
+                            1095 : '投篮未中',   // 主队投篮未中 
+                            1094 : '投篮未中' // 客队投篮未中
+                        }
+                        
+                        var temp = VC.split('^')
+                        var outInfo = []
+                        for(var x=0; x<temp.length; x++) {
+                            var key = temp[x].slice(1)
+                            var team = temp[x].slice(0,1)
+                            if(team == '1') {
+                                team = '[主队]'
+                            } else if (team == '2'){
+                                team = '[客队]'
+                            } else {
+                                team = '[无]'
+                            }
+                            outInfo.push(team  + ' ' + data_map[key])
+                        }
+                        // 更新显示
+                        var info = outInfo.join('^');
+                        if(this.eventData.data.length > 0) {
+                            if (this.eventData.data[this.eventData.data.length - 1] != info) {
+                                this.eventData.data.push(info);
+                            }
+
+                        } else {
+                            this.eventData.data.push(info);
+                        }
+                        
+                        if (this.eventData.data.length >= 10) {
+                            this.eventData.data = this.eventData.data.slice(this.eventData.data.length - 10);
+                        }
+
+                        // 转发数据
+                        var matchData = VC.match(/([1-2])1074|[1-2]1075|[1-2]1079/ig)
+                        if (matchData == null) {
+                            return
+                        }
+
+                        for(var x=0; x<matchData.length; x++) {
+                            var team = matchData[x].slice(0, 1)
+
+                            var eventTeam = selectTeam = this.matchData[leagueId].events[eventId].markets.teams
+                            var eventTeamKey = selectTeam = this.matchData[leagueId].events[eventId].markets.teamsKey
+                            var eventNode = this.matchData[leagueId].events[eventId].node
+                            var eventTeamName = ''
+                            if (team == '1') {
+                                eventTeamName = eventTeam[eventTeamKey[0]].name
+                            } else if (team == '2') {
+                                eventTeamName = eventTeam[eventTeamKey[1]].name
+                            } else {
+                                continue
+                            }
+
+                            var node_map = {
+                                '第一节': 1,
+                                '第1节': 1,
+                                '第二节': 2,
+                                '第2节': 2,
+                                '第三节': 3,
+                                '第3节': 3,
+                                '第四节': 4,
+                                '第4节': 4
+                            }
+                            var event = this.matchData[leagueId].events[eventId]
+                            var data = {
+                                action: 'update',
+                                team: eventTeamName,
+                                node: node_map[eventNode.trim()],
+                                home_name: eventTeam[eventTeamKey[0]].name,
+                                away_name: eventTeam[eventTeamKey[1]].name,
+                                home_score:  this.getEventScore(event, 0),
+                                away_score:  this.getEventScore(event, 1),
+                            }
+
+                            if (this.ws_client) {
+                                this.ws_client.sendWsData(data)
+                            }
+                        }
+                       
+                    },
+                    getEventInfo: function(event) {
+                        if(event.id == this.eventData.eventId) {
+                            return this.eventData.text
+                        } else {
+                            return '没有任何数据'
+                        }
+                    },
+                    getEventScore: function(event, index) {
+                        try {
+                            return event.score.split('-')[index]
+                        } catch(e) {
+                            return ''
+                        }
+                        
+                    },
+                    openEvent: function(eventId, marketsId) {
+
+                        if (eventId == this.eventData.eventId) {
+                            return
+                        }
+
+                        this.eventData = {
+                            eventId: eventId,
+                            data: [],
+                        }
+                        window.openEvent(eventId, marketsId)
+                    }
+                },
+                mounted: function () {
+                    this.$nextTick(async () => {
+                        this.ws_client = new window.WsClient()
+                        this.ws_client.connectWsServer()
+                        await window.startEvent(null, this.updateGameData, this.updateGameEventInfo)
+                    })
+                }
+            })
+        }, 100)
+
+    </script>
+
+</body>
+</html>

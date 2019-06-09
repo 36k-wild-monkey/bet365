@@ -1,0 +1,43 @@
+    // F
+    // IN 没啥用
+    // CG 不知道干嘛的
+    // XL 特别增加不清楚
+    // EV 球赛事件
+    // CL 赛事结果
+    
+    /*
+        CT 联赛名
+        OR 排序
+        CB 赛事标识
+        CL 赛事类型
+    */
+    //console.log(data.getMessage())
+
+    /*
+    if(data.message.slice(0, 1) == 'I' || data.message.slice(0, 1) == 'D') {
+        console.log(data.toString())
+    }
+    */
+
+/*
+[ReaditMessage messageType=21 message=D|| topic=OVInPlay_10_0/OV_7_10_0/OV20646290C7_10_0/OV200004015418140052C7A_10_0/OV200004015418140052C7-70154_10_0/OV360881822513409570_10_0]
+index.js:110
+[ReaditMessage messageType=21 message=I|PA;FI=80653858;HA=;HD=;ID=84024554;IT=OV360882711571639842_10_0;NA=Sung Kang;OD=66/1;OR=14;PX=;SU=0;| topic=OV200004015418140052C7-70154_10_0/OV360882711571639842_10_0]
+index.js:110
+[ReaditMessage messageType=21 message=D|| topic=Media_L10_Z0/M202497715418379522C4_L10_Z0]
+index.js:110
+[ReaditMessage messageType=21 message=D|| topic=OVInPlay_10_0/OV_4_10_0/OV202497715418379522C4A_10_0]
+index.js:110
+[ReaditMessage messageType=21 message=D|| topic=OVInPlay_10_0/OV_13_10_0/OV20647160C13_10_0]
+index.js:110
+[ReaditMessage messageType=21 message=I|EV;AU=0;C1=20249771;C2=41828592;CB=AUHKSGUS;CL=4;FF=1~GpGsHXJQ;ID=202497715418285922C4A_10_0;IT=M202497715418285922C4_L10_Z0;MP=16;MS=0;NA=2.08 纽卡斯尔 (赛事 1);OR=28;PS=0;SD=0;SM=1558098480;T1=5;T2=2;VI=1;VS=-1;| topic=Media_L10_Z0/M202497715418285922C4_L10_Z0]
+index.js:110
+[ReaditMessage messageType=21 message=I|EV;AU=0;C1=20249771;C2=41828592;C3=0;CB=AUHKSGUS;CC=Newcastle;CK=;CP=;CT=赛狗;DC=0;ET=0;FB=0;FF=;FS=0;ID=202497715418285922C4A_10_0;IT=OV202497715418285922C4A_10_0;LM=0;MD=;MP=16;MS=0;NA=2.08 纽卡斯尔 (赛事 1);OF=01100;OR=3;PS=0;SB=0;SD=0;SE=0;SS=;SV=;SY=0;T1=5;T2=2;T3=0;TD=0;TF=0;TM=0;TS=0;TT=0;TU=;UC=赢/位置 1/4 2 位置;VI=1;VS=-1;| topic=OV_4_10_0/OV202497715418285922C4A_10_0]
+index.js:110
+[ReaditMessage messageType=21 message=I|MA;CN=2;FF=;FI=0;ID=40226;IT=OV202497715418285922C4-40226_10_0;NA=独赢及位置滚球盘;OR=0;PC=OV_4_10_0;SU=0;SY=0;TO=;| topic=OV202497715418285922C4A_10_0/OV202497715418285922C4-40226_10_0]
+index.js:110
+[ReaditMessage messageType=21 message=I|PA;DI=34577;FI=80673583;HA=;HD=;ID=87614619;IT=OV376301923337173807_10_0;NA=Fire Below;NC=1;OD=7/1;OR=0;PX=;SU=0;| topic=OV202497715418285922C4-40226_10_0/OV376301923337173807_10_0]
+index.js:110
+[ReaditMessage messageType=21 message=I|PA;DI=91483;FI=80673583;HA=;HD=;ID=87614631;IT=OV376301974876781359_10_0;NA=Hurleys Beau;NC=3;OD=9/2;OR=1;PX=;SU=0;| topic=OV202497715418285922C4-40226_10_0/OV376301974876781359_10_0]
+index.js:110
+*/

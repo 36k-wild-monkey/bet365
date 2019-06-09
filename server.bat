@@ -1,0 +1,3 @@
+cd  server
+node .
+pause
