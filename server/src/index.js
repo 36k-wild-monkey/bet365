@@ -5,6 +5,7 @@ const tokenUtil  = require('./tokenUtil')
 const app = express()
 
 
+var base_url = 'https://www.28365365.com';
 
 app.use('/static', express.static('static'))
 
@@ -16,14 +17,14 @@ app.get('/', (req, res) => {
 app.get('/getSessionId', async (req, resp) => {
     const session = superagent.agent();
     session
-        .get('https://www.28365365.com/')
+        .get(base_url)
         .end((err, res) => {
             if(res.statusCode === 200) {
                 try {
                     var nstToken = tokenUtil.getNstToken(res.text);
                     var wsToken = tokenUtil.B365SimpleEncrypt.decrypt(nstToken);
                     session
-                        .get('https://www.28365365.com/defaultapi/sports-configuration')
+                        .get(base_url + '/defaultapi/sports-configuration')
                         .end((err, res) => {
                             try {
                                 var sessionId = JSON.parse(res.text)['flashvars']['SESSION_ID'];
@@ -47,5 +48,5 @@ app.get('/getSessionId', async (req, resp) => {
         });
 })
 
-
-app.listen(5000, () => console.log('Example app listening on port 5000!'))
+var port = 5001;
+app.listen(port, () => console.log('Example app listening on port ' + port + '!'))
