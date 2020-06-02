@@ -243,10 +243,11 @@
                                 away_score:  this.getEventScore(event, 1),
                                 type: data_map[key]
                             }
-
+                            /*
                             if (this.ws_client) {
                                 this.ws_client.sendWsData(data)
                             }
+                            */
                         }
                        
                     },
@@ -280,9 +281,11 @@
                 },
                 mounted: function () {
                     this.$nextTick(async () => {
+                        /*
                         this.ws_client = new window.WsClient()
                         this.ws_client.connectWsServer()
-                        await window.startEvent(null, this.updateGameData, this.updateGameEventInfo)
+                        */
+                        await window.startEvent(null, null, this.updateGameData, this.updateGameEventInfo)
                     })
                 }
             })

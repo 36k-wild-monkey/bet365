@@ -24,9 +24,9 @@ var ws
 var updateGameDataCallback = null
 var updateGameEventInfoCallback = null
 
+
 class Team {
     constructor() {
-
         this.league = null
         this.leagueId = null
         this.leagueIt = null
@@ -80,10 +80,7 @@ class ReaditMessage {
 
 const getSessionId = async () => {
     var resp = await axios.get('/getSessionId')
-    if(resp.data.length < 1) {
-        return null
-    }
-    return resp.data.trim();
+    return resp.data;
 }
 
 
@@ -104,8 +101,9 @@ const handshakeCallback = (data) => {
 
 }
 
-const send_handshake_data = (ws, sessionId) => {
-    var data = '\x23\x03\x50\x01' + '__time,S_' + sessionId + '\x00'
+const send_handshake_data = (ws, sessionId, wsToken) => {
+    var data = '\x23\x03\x50\x01' + '__time,S_' + sessionId + ',D_' + wsToken + '\x00'
+    // var data = '\x23\x03\x50\x01' +'__time,S_0AEDAB9F9008589B9457F3C4CD91F82D000003,D_CxWOXg==.8dk0zZgT8SOwcgJjjbdL//zMrMrdxK0v7e9sRcrWWj0=' + '\x00'
     ws.send(data)
 }
 
@@ -594,17 +592,24 @@ const socketDataCallback = (data) => {
 }
 
 
-module.startEvent = window.startEvent = async (sessionId, callback, infoCallback) => {
+module.startEvent = window.startEvent = async (sessionId, wsToken, callback, infoCallback) => {
     updateGameDataCallback = callback
     updateGameEventInfoCallback = infoCallback
     connectStatus = false
 
-    if (sessionId == null) {
-        var sessionId = await getSessionId()
+    if (sessionId == null && wsToken == null) {
+        try {
+            var respData = await getSessionId();
+            if(respData.fetchStatus) {
+                sessionId = respData.sessionId;
+                wsToken = respData.wsToken;
+            }
+        } catch(err) {
+        }
     }
 
-    if (sessionId == null || sessionId == 'null' || sessionId.length == 0) {
-        alert('获取赛事失败');
+    if (sessionId == null || sessionId == 'null' || wsToken == null || wsToken == '' ) {
+        alert('获取session失败，请刷新重试');
         return
     }
 
@@ -616,7 +621,7 @@ module.startEvent = window.startEvent = async (sessionId, callback, infoCallback
         }
     }
 
-    var url = 'wss://premws-pt3.365lpodds.com/zap/?uid=' + Math.random().toString().substring(2)
+    var url = 'wss://premws-pt3.365pushodds.com/zap/?uid=' + Math.random().toString().substring(2)
     connectStatus = false
     ws = new WebSocket(url, 'zap-protocol-v1', {
         headers: {
@@ -627,7 +632,7 @@ module.startEvent = window.startEvent = async (sessionId, callback, infoCallback
     ws.onopen = () => {
         isHandShake = false
         connectStatus = true
-        send_handshake_data(ws, sessionId)
+        send_handshake_data(ws, sessionId, wsToken)
     }
 
     ws.onclose = () => {
@@ -643,7 +648,7 @@ module.startEvent = window.startEvent = async (sessionId, callback, infoCallback
         if (!isHandShake && handshakeCallback(event.data)) {
             // 发送初始化数据
             // CONFIG_10_0,HL_L10_Z0_C1_W1,HR_L10_Z0_C1_W1
-            // ws.send('\x16\x00CONFIG_10_0,OVInPlay_10_0,Media_L10_Z0,XL_L10_Z0_C1_W1\x01')
+            ws.send('\x16\x00CONFIG_10_0,OVInPlay_10_0,Media_L10_Z0,XL_L10_Z0_C1_W1\x01')
             ws.send('\x16\x00CONFIG_10_0,OVInPlay_10_0\x01')
             // 进入某个比赛
             // ws.send('\x16\x006V80841448C18A_10_0\x01')

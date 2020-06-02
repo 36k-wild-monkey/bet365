@@ -1,8 +1,9 @@
 const express = require('express')
-const fs = require('fs')
-const utils  = require('./utils')
+const superagent = require('superagent')
+const tokenUtil  = require('./tokenUtil')
 
 const app = express()
+const session = superagent.agent();
 
 
 
@@ -12,24 +13,38 @@ app.get('/', (req, res) => {
     res.redirect('./src/index.html')
 })
 
-app.get('/getSessionId', async (req, res) => {
-    if(!await fs.existsSync('./sessionId')) { 
-        var sessionId = await utils.getSessionId()
-        await fs.writeFileSync('./sessionId', new Date().getTime() + '----' + sessionId);
-        res.send(sessionId);
-    } else {
-        var content = await fs.readFileSync('./sessionId').toString().split('----');
-        var lastTime = parseInt(content[0])
-        var nowTime = new Date().getTime()
-        if (nowTime - lastTime > 60000 * 30) { // 半个小时
-            var sessionId = await utils.getSessionId()
-            await fs.writeFileSync('./sessionId', new Date().getTime() + '----' + sessionId);
-            res.send(sessionId);
-        } else {
-            res.send(content[1]);
-        }
-    }
+app.get('/getSessionId', async (req, resp) => {
+    session
+        .get('https://www.bet365.com/')
+        .end((err, res) => {
+            if(res.statusCode === 200) {
+                try {
+                    var nstToken = tokenUtil.getNstToken(res.text);
+                    var wsToken = tokenUtil.B365SimpleEncrypt.decrypt(nstToken);
+                    session
+                        .get('https://www.bet365.com/defaultapi/sports-configuration')
+                        .end((err, res) => {
+                            try {
+                                var sessionId = JSON.parse(res.text)['flashvars']['SESSION_ID'];
+                                if(sessionId && wsToken) {
+                                    resp.send({ fetchStatus: true, sessionId, wsToken });
+                                } else {
+                                    resp.send({ fetchStatus: false });
+                                }
+                                
+                            } catch(err) {
+                                resp.send({ fetchStatus: false });
+                            }
+                            
+                        });
+                } catch(err) {
+                    resp.send({ fetchStatus: false });
+                }
+            } else {
+                resp.send({ fetchStatus: false });
+            }
+        });
 })
 
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+app.listen(5000, () => console.log('Example app listening on port 5000!'))

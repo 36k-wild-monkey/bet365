@@ -77,7 +77,7 @@
 
     </style>
     <!--替换内容-->
-    <script type="module" src="/static/app.df0e0b469506c592fffaadb65961ae3a.js"></script>
+    <script type="module" src="/static/app.2fca923793b4049212f4e68a2c5cc389.js"></script>
 
 </head>
 <body>
@@ -243,10 +243,11 @@
                                 away_score:  this.getEventScore(event, 1),
                                 type: data_map[key]
                             }
-
+                            /*
                             if (this.ws_client) {
                                 this.ws_client.sendWsData(data)
                             }
+                            */
                         }
                        
                     },
@@ -280,9 +281,11 @@
                 },
                 mounted: function () {
                     this.$nextTick(async () => {
+                        /*
                         this.ws_client = new window.WsClient()
                         this.ws_client.connectWsServer()
-                        await window.startEvent(null, this.updateGameData, this.updateGameEventInfo)
+                        */
+                        await window.startEvent(null, null, this.updateGameData, this.updateGameEventInfo)
                     })
                 }
             })

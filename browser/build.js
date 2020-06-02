@@ -6,7 +6,7 @@ const crypto = require('crypto')
 const urljoin = require('url-join')
 
 config = {
-    files: ['./src/ws-client.js', './src/app.js'],
+    files: ['./src/app.js'],
     outDir: '../server/static',
     copyFiles: ['index.html'],
     copyDir: '../server/static',
