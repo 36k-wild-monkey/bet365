@@ -21,8 +21,10 @@ app.get('/getSessionId', async (req, resp) => {
         .end((err, res) => {
             if(res.statusCode === 200) {
                 try {
-                    var nstToken = tokenUtil.getNstToken(res.text);
-                    var wsToken = tokenUtil.B365SimpleEncrypt.decrypt(nstToken);
+                    // var nstToken = tokenUtil.getNstToken(res.text);
+                    var nstToken = 'QcQlYA==.z2kQfBEbUtwhWdIVM7DxT5eE5l1JjmZn8Lh4aPhZ5SI=';
+                    // var wsToken = tokenUtil.B365SimpleEncrypt.decrypt(nstToken);
+                    var wsToken = nstToken
                     session
                         .get(base_url + '/defaultapi/sports-configuration')
                         .end((err, res) => {
